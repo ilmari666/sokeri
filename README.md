@@ -1,2 +1,2 @@
 # sokeri
-Sokeri.com front page
+Dirty inline css/javascript Sokeri.com front page
