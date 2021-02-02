@@ -1,0 +1,17 @@
+name: CI
+on: [push]
+jobs:
+  deploy:
+    name: "Deploy to production"
+    runs-on: self-hosted
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Stop the server
+        run: sudo systemctl stop httpd
+
+      - name: Check out the source
+        run: cd $SOKERI_PATH && git fetch && git reset --hard origin/main
+
+      - name: Start the server
+        if: ${{ always() }}
+        run: sudo systemctl start httpd
