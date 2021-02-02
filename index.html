@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sokeri.com || 1998-2021 twenty-three years of glory</title>
+<style>
+
+* {
+	margin: 0;
+}
+html, body {
+	height: 100%;
+}
+
+#layout {
+	height: calc(100% - 1.4em);
+	color: #ffb100;
+	padding: 0.7em;
+}
+
+.blink {
+ 	animation: blinker 1s linear infinite;
+	margin: 0px;
+	position: relative;
+	top: -10px;
+}
+
+a {
+	position: relative;
+	color: #000000;
+	background: #ffb100;
+	text-decoration: none;
+	transition: 0.3s;
+	display: block;
+	padding: 0.2em;
+	padding-left:0.7em;
+	margin-bottom:1em;
+	left:-0.7em;
+	animation-duration: 1s;
+	animation-name: slidein;
+	transition: 0.3s;
+	
+}
+
+a:hover {
+	color: #ff1111;
+	background-color: #ffffff;
+	padding-right: 1em;
+	padding-left: 2em;
+	text-color: #00ff00;
+}
+
+
+#logo {
+	width: 448px;
+	height: 114px;
+}
+
+@media only screen and (max-width:720px) {
+	#logo {
+		width: 224px;
+		height: 57px;
+	}
+} 
+
+#greeting {
+	position: relative;
+	top: -10px;
+	margin-bottom: 10px;
+}
+
+#links {
+	height: calc(100% - 160px);
+	min-height: 200px;
+	display: flex;
+	align-items: flex-start;
+	justify-content: left;
+	flex-flow: column;
+}
+@media only screen and (max-width:720px) {
+	#links {
+		height: calc(100% - 90px);
+	}
+}
+
+#site_footer {
+	text-align: center;
+	left: 0px;
+}
+
+
+
+@keyframes blinker {
+	50% { opacity: 0; }
+}
+
+@keyframes slidein {
+	from {
+		left:-10em;
+	}
+	to {
+		left:-0.7em;
+	}
+}
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+<body bgcolor="#2d343b" class="box">
+<div id="layout">
+	<div><img id="logo" src="i/sokeri_black.png" alt="Sokeri"></div>
+	<p>
+	<span id="greeting"></span><span id="cursor" class="blink">&#x2588;</span>
+	</p>
+	<nav id="links"></nav>
+
+	<footer id="site_footer">&copy; Sokeri Interactive 1998-2021</footer>
+</div>
+<script>
+(function() {
+	var messages=[
+		'Well hello there, stranger.',
+		'Hello, world!',
+		'Do you come here often?',
+		'A horse walks into a bar. The bartender says, "So, why the long face?"',
+		'Cheese on toast, lad.',
+		'F*ckings to lamers!',
+		'Almost a quarter century of placeholder content.',
+		'From \'98 til infinity.',
+		'sudo make me a sandwich',
+		'It\'s good to be the king.',
+		'covfefe',
+		'How much wood would a woodchuck chuck if a woodchuck could chuck wood?',
+		'Supercalifragilisticexpialidocious',
+		'Insert buckazoid.',
+		'Ken sent me.',
+		'You fight like a dairy farmer.'
+ 	];
+
+	// we don't want to show the same greeting on refresh
+	
+	var previousGreeting = window.sessionStorage ? window.sessionStorage.getItem('previous_greeting') : null;
+	var random;
+	if (previousGreeting == null){
+		random = Math.floor(Math.random()*messages.length);
+	} else {
+		random = Math.floor(Math.random()*(messages.length-1));
+		if (random >= parseInt(previousGreeting, 10)){
+			random++;
+		}
+	}
+	window.sessionStorage.setItem('previous_greeting', random);
+
+	var message = messages[random];
+	var character = 0;
+	var writer = document.getElementById('greeting');
+	var cursor = document.getElementById('cursor');
+	var delay = 200; // average delay between typed characters
+	var randomize = 0.5; // random multiplier % of delay
+
+	function nextChar(){
+		writer.innerHTML=message.substring(0, ++character);
+		if (character<message.length){
+			setTimeout(nextChar, delay*(1-randomize)+2*Math.random()*randomize*delay);
+		}
+	}
+
+	var frameCount=0;
+	var animDuration=25+Math.floor(Math.random()*25);
+	var animFrames=[
+		'&#x2596;',
+		'&#x2598;',
+		'&#x259d;',
+		'&#x2597;',
+		'&#x2588;' // we use this as a special end frame which we skip in the main loop
+	];
+
+	function animateCursor(){
+		if (frameCount<50){
+			cursor.innerHTML=animFrames[frameCount%(animFrames.length-1)];
+			setTimeout(animateCursor,100);
+			frameCount++;
+		} else {
+			cursor.innerHTML=animFrames[animFrames.length-1];
+			nextChar();
+		}
+	}
+	animateCursor();
+
+	var links=[
+		'od.sokeri.com',
+		'lum.sokeri.com',
+		'ilmux.org'
+	];
+	var linksAdded=0;
+	var linkContainer=document.getElementById('links');
+	function addLinks(){
+		var sublink=links[linksAdded++];
+		var a=document.createElement('a');
+		a.href='http://'+sublink;
+		a.innerHTML=sublink;
+		linkContainer.appendChild(a);
+		if (linksAdded<links.length){
+			setTimeout(addLinks, 300);
+		}
+	}
+	addLinks();
+
+	function updateFooter(){
+		var footer= document.getElementById('site_footer');
+		footer.innerHTML='&copy; Sokeri Interactive 1998-'+Math.max(2021, new Date().getUTCFullYear());;
+	}
+	updateFooter();
+})();
+</script>
