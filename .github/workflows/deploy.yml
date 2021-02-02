@@ -11,7 +11,7 @@ jobs:
         run: sudo systemctl stop httpd
 
       - name: Check out the source
-        run: cd $SOKERI_PATH && git fetch && git reset --hard origin/master
+        run: cd $SOKERI_PATH && git fetch && git reset --hard origin/main
 
       - name: Start the server
         if: ${{ always() }}
