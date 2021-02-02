@@ -46,7 +46,6 @@ a:hover {
 	background-color: #ffffff;
 	padding-right: 1em;
 	padding-left: 2em;
-	text-color: #00ff00;
 }
 
 
@@ -69,6 +68,7 @@ a:hover {
 }
 
 #links {
+	margin-top: 10px;
 	height: calc(100% - 160px);
 	min-height: 200px;
 	display: flex;
@@ -76,6 +76,7 @@ a:hover {
 	justify-content: left;
 	flex-flow: column;
 }
+
 @media only screen and (max-width:720px) {
 	#links {
 		height: calc(100% - 90px);
@@ -86,8 +87,6 @@ a:hover {
 	text-align: center;
 	left: 0px;
 }
-
-
 
 @keyframes blinker {
 	50% { opacity: 0; }
@@ -118,6 +117,8 @@ a:hover {
 </div>
 <script>
 (function() {
+
+	// setup greetings
 	var messages=[
 		'Well hello there, stranger.',
 		'Hello, world!',
@@ -137,8 +138,7 @@ a:hover {
 		'You fight like a dairy farmer.'
  	];
 
-	// we don't want to show the same greeting on refresh
-	
+	// we don't want to show the same greeting on refresh because the developer is slightly ocd
 	var previousGreeting = window.sessionStorage ? window.sessionStorage.getItem('previous_greeting') : null;
 	var random;
 	if (previousGreeting == null){
@@ -165,33 +165,36 @@ a:hover {
 		}
 	}
 
-	var frameCount=0;
-	var animDuration=25+Math.floor(Math.random()*25);
+	var currentFrame=0;
 	var animFrames=[
 		'&#x2596;',
 		'&#x2598;',
 		'&#x259d;',
 		'&#x2597;',
-		'&#x2588;' // we use this as a special end frame which we skip in the main loop
+		'&#x2588;' // we use this as an end frame which we skip in the main loop
 	];
+	var animTTL=25+Math.floor(Math.random()*25);
 
 	function animateCursor(){
-		if (frameCount<50){
-			cursor.innerHTML=animFrames[frameCount%(animFrames.length-1)];
+		if (animTTL--){
+			currentFrame = (++currentFrame) % (animFrames.length-1)
 			setTimeout(animateCursor,100);
-			frameCount++;
 		} else {
-			cursor.innerHTML=animFrames[animFrames.length-1];
-			nextChar();
+			currentFrame=animFrames.length-1;
+			nextChar(); // start the writer loop
 		}
+		cursor.innerHTML=animFrames[currentFrame];
 	}
-	animateCursor();
+	animateCursor(); // a faux loading / thinking animation
 
+
+	// animate add links using a timeout to allow for animation
 	var links=[
 		'od.sokeri.com',
 		'lum.sokeri.com',
 		'ilmux.org'
 	];
+
 	var linksAdded=0;
 	var linkContainer=document.getElementById('links');
 	function addLinks(){
@@ -206,8 +209,9 @@ a:hover {
 	}
 	addLinks();
 
+	// future proof the footer so that we don't need to touch the site until something breaks
 	function updateFooter(){
-		var footer= document.getElementById('site_footer');
+		var footer=document.getElementById('site_footer');
 		footer.innerHTML='&copy; Sokeri Interactive 1998-'+Math.max(2021, new Date().getUTCFullYear());;
 	}
 	updateFooter();
